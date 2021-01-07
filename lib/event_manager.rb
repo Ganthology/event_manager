@@ -62,6 +62,7 @@ template_letter = File.read 'form_letter.erb'
 erb_template = ERB.new template_letter
 
 reg_hour_collection = []
+reg_day_collection = []
 
 contents.each do |row|
   id = row[0]
@@ -71,6 +72,7 @@ contents.each do |row|
 
   reg_date = DateTime.strptime(row[:regdate], "%m/%e/%y %k:%M")
   reg_hour_collection << reg_date.hour
+  reg_day_collection << reg_date.strftime('%A')
 
   zipcode = clean_zipcode(row[:zipcode])
 
@@ -80,7 +82,10 @@ contents.each do |row|
 
   # Outputting form letters to a file
   save_thank_you_letter(id, form_letter)
-  puts "#{name} : #{phone_number} #{reg_date}"
+  puts "#{name} : #{phone_number} #{reg_date.hour} #{reg_date.strftime('%A')}"
 end
 peak_hour = count_max(reg_hour_collection)
-puts "Most people(#{peak_hour[1]}) registered at #{peak_hour[0]}:00 hour"
+peak_day = count_max(reg_day_collection)
+
+puts "Most people(#{peak_hour[1]}) registered at #{peak_hour[0]}00 hours."
+puts "Most people(#{peak_day[1]}) registered on #{peak_day[0]}."
